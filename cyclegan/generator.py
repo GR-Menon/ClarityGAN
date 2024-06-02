@@ -1,29 +1,38 @@
 import torch
 import torch.nn as nn
 
-from layer_blocks import PatchGANBlock, ConvBlock, ResidualBlock
 
+class ConvBlock(nn.Module):
+    def __init__(self, in_channels: int, out_channels: int, downsample: bool = True, use_act: bool = True,
+                 use_dropout: bool = False, **kwargs):
+        super(ConvBlock, self).__init__()
 
-class CycleDiscriminator(nn.Module):
-    def __init__(self, in_channels: int = 3, features=None):
-        super(CycleDiscriminator, self).__init__()
+        self.conv_block = nn.Sequential(
+            nn.Conv2d(in_channels=in_channels, out_channels=out_channels, padding_mode="reflect", **kwargs)
 
-        if features is None:
-            features = [64, 128, 256, 512]
+            if downsample
+            else nn.ConvTranspose2d(in_channels=in_channels, out_channels=out_channels, **kwargs),
 
-        layers = []
-        for feature in features:
-            layers.append(
-                PatchGANBlock(in_channels=in_channels, out_channels=feature, stride=1 if feature == features[-1] else 2,
-                              has_norm=False if feature == features[0] else True))
-
-            in_channels = feature
-        layers.append(nn.Conv2d(in_channels=in_channels, out_channels=1, kernel_size=4, stride=1, padding=1, padding_mode="reflect"))
-
-        self.cycle_disc = nn.Sequential(*layers)
+            nn.InstanceNorm2d(num_features=out_channels),
+            nn.ReLU(inplace=True) if use_act else nn.Identity()
+        )
+        if use_dropout:
+            self.conv_block = nn.Sequential(self.conv_block, nn.Dropout(p=0.5))
 
     def forward(self, x):
-        return torch.sigmoid(self.cycle_disc(x))
+        return self.conv_block(x)
+
+
+class ResidualBlock(nn.Module):
+    def __init__(self, features: int):
+        super(ResidualBlock, self).__init__()
+        self.residual_block = nn.Sequential(
+            ConvBlock(in_channels=features, out_channels=features, kernel_size=3, padding=1),
+            ConvBlock(in_channels=features, out_channels=features, kernel_size=3, padding=1, use_act=False),
+        )
+
+    def forward(self, x):
+        return x + self.residual_block(x)
 
 
 class CycleGenerator(nn.Module):
@@ -31,7 +40,8 @@ class CycleGenerator(nn.Module):
         super(CycleGenerator, self).__init__()
 
         self.base = nn.Sequential(
-            nn.Conv2d(in_channels=img_channels, out_channels=latent_dim, kernel_size=7, stride=1, padding=3, padding_mode="reflect"),
+            nn.Conv2d(in_channels=img_channels, out_channels=latent_dim, kernel_size=7, stride=1, padding=3,
+                      padding_mode="reflect"),
             nn.ReLU(inplace=True)
         )
 
@@ -57,7 +67,8 @@ class CycleGenerator(nn.Module):
             ]
         )
 
-        self.head = nn.Conv2d(in_channels=latent_dim, out_channels=img_channels, kernel_size=7, stride=1, padding=3, padding_mode="reflect")
+        self.head = nn.Conv2d(in_channels=latent_dim, out_channels=img_channels, kernel_size=7, stride=1, padding=3,
+                              padding_mode="reflect")
 
     def forward(self, x):
         x = self.base(x)
@@ -75,14 +86,6 @@ class CycleGenerator(nn.Module):
         return torch.tanh(x)
 
 
-def test_disc():
-    x = torch.randn((16, 3, 256, 256))
-    model = CycleDiscriminator()
-    preds = model(x)
-    print(model)
-    print(preds.shape)
-
-
 def test_gen():
     x = torch.randn((16, 3, 256, 256))
     model = CycleGenerator(3, 9)
@@ -91,11 +94,5 @@ def test_gen():
     print(preds.shape)
 
 
-if __name__ == '__main__':
-    choice = int(input("0 for DiscTest, 1 for GenTest: "))
-    if choice == 0:
-        test_disc()
-    elif choice == 1:
-        test_gen()
-    else:
-        pass
+if __name__ == "__main__":
+    test_gen()

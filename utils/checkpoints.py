@@ -1,34 +1,22 @@
 from datetime import datetime
 
 import torch
-from torch import nn, optim
 
 
-def save_checkpoint(
-        path: str,
-        models: dict[str, "nn.Module"],
-        optimizers: dict[str, "optim.Optimizer"],
-        **others,
-) -> str:
-    path = f"{path}/checkpoint-{datetime.now()}.pt" if not path.endswith(".pt") else path
-    torch.save({
-        **{f"model_{k}_state_dict": v.state_dict() for k, v in models.items()},
-        **{f"optim_{k}_state_dict": v.state_dict() for k, v in optimizers.items()},
-        **others
-    }, path)
-    return path
+def save_checkpoint(model, optimizer, file=f"CycleGAN_{datetime.now()}"):
+    print("Saving checkpoint...")
+    checkpoint = {
+        "model": model.state_dict(),
+        "optimizer": optimizer.state_dict()
+    }
+    torch.save(checkpoint, file)
 
 
-def load_checkpoint(
-        path: str,
-        models: dict[str, "nn.Module"],
-        optimizers: dict[str, "optim.Optimizer"] = None,
-        device: str = "cpu"
-) -> dict:
-    checkpoint = torch.load(path, map_location=device)
-    for k, v in models.items():
-        v.load_state_dict(checkpoint.pop(f"model_{k}_state_dict"))
-    if optimizers is not None:
-        for k, v in optimizers.items():
-            v.load_state_dict(checkpoint.pop(f"optim_{k}_state_dict"))
-    return checkpoint
+def load_checkpoint(checkpoint_file, model, optimizer, lr):
+    print("Loading checkpoint...")
+    checkpoint = torch.load(checkpoint_file, map_location=None)
+    model.load_state_dict(checkpoint["model"])
+    optimizer.load_state_dict(checkpoint["optimizer"])
+
+    for param_group in optimizer.param_groups:
+        param_group["lr"] = lr
