@@ -8,13 +8,13 @@ class PatchGANBlock(nn.Module):
 
         layers = [
             nn.Conv2d(in_channels=in_channels, out_channels=out_channels, kernel_size=4, stride=stride, padding=1,
-                      bias=False)
+                      bias=True)
         ]
 
         if has_norm:
             layers.append(nn.InstanceNorm2d(num_features=out_channels))
 
-        layers.append(nn.LeakyReLU(negative_slope=0.2, inplace=True))
+        layers.append(nn.LeakyReLU(negative_slope=0.2))
 
         self.patch_block = nn.Sequential(*layers)
 
