@@ -6,13 +6,13 @@ class PatchGANBlock(nn.Module):
         super(PatchGANBlock, self).__init__()
 
         layers = [
-            nn.Conv2d(in_channels, out_channels, kernel_size=4, stride=stride, padding=1, bias=False)
+            nn.Conv2d(in_channels=in_channels, out_channels=out_channels, kernel_size=4, stride=stride, padding=1, bias=False)
         ]
 
         if has_norm:
-            layers.append(nn.InstanceNorm2d(out_channels))
+            layers.append(nn.InstanceNorm2d(num_features=out_channels))
 
-        layers.append(nn.LeakyReLU(0.2, inplace=True))
+        layers.append(nn.LeakyReLU(negative_slope=0.2, inplace=True))
 
         self.patch_block = nn.Sequential(*layers)
 
@@ -21,29 +21,32 @@ class PatchGANBlock(nn.Module):
 
 
 class ConvBlock(nn.Module):
-    def __init__(self, in_channels: int, out_channels: int, downsample: bool = True, use_act: bool = True, use_dropout:bool=False, **kwargs):
+    def __init__(self, in_channels: int, out_channels: int, downsample: bool = True, use_act: bool = True,
+                 use_dropout: bool = False, **kwargs):
         super(ConvBlock, self).__init__()
 
         self.conv_block = nn.Sequential(
-            nn.Conv2d(in_channels, out_channels, padding_mode="reflect", **kwargs)
+            nn.Conv2d(in_channels=in_channels, out_channels=out_channels, padding_mode="reflect", **kwargs)
+
             if downsample
-            else nn.ConvTranspose2d(in_channels, out_channels, **kwargs),
-            nn.InstanceNorm2d(out_channels),
+            else nn.ConvTranspose2d(in_channels=in_channels, out_channels=out_channels, **kwargs),
+
+            nn.InstanceNorm2d(num_features=out_channels),
             nn.ReLU(inplace=True) if use_act else nn.Identity()
         )
         if use_dropout:
-            self.conv_block = nn.Sequential(self.conv_block, nn.Dropout(0.5))
+            self.conv_block = nn.Sequential(self.conv_block, nn.Dropout(p=0.5))
 
     def forward(self, x):
         return self.conv_block(x)
 
 
 class ResidualBlock(nn.Module):
-    def __init__(self, channels:int):
+    def __init__(self, features: int):
         super(ResidualBlock, self).__init__()
         self.residual_block = nn.Sequential(
-            ConvBlock(channels, channels, kernel_size=3, padding=1),
-            ConvBlock(channels, channels, kernel_size=3, padding=1, use_act=False),
+            ConvBlock(in_channels=features, out_channels=features, kernel_size=3, padding=1),
+            ConvBlock(in_channels=features, out_channels=features, kernel_size=3, padding=1, use_act=False),
         )
 
     def forward(self, x):
