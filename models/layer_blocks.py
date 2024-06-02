@@ -10,9 +10,7 @@ class PatchGANBlock(nn.Module):
         ]
 
         if has_norm:
-            layers.append(nn.BatchNorm2d(out_channels))
-        else:
-            layers.append(nn.Identity())
+            layers.append(nn.InstanceNorm2d(out_channels))
 
         layers.append(nn.LeakyReLU(0.2, inplace=True))
 
@@ -23,7 +21,7 @@ class PatchGANBlock(nn.Module):
 
 
 class ConvBlock(nn.Module):
-    def __init__(self, in_channels: int, out_channels: int, downsample: bool = True, use_act: bool = True, **kwargs):
+    def __init__(self, in_channels: int, out_channels: int, downsample: bool = True, use_act: bool = True, use_dropout:bool=False, **kwargs):
         super(ConvBlock, self).__init__()
 
         self.conv_block = nn.Sequential(
@@ -33,6 +31,8 @@ class ConvBlock(nn.Module):
             nn.InstanceNorm2d(out_channels),
             nn.ReLU(inplace=True) if use_act else nn.Identity()
         )
+        if use_dropout:
+            self.conv_block = nn.Sequential(self.conv_block, nn.Dropout(0.5))
 
     def forward(self, x):
         return self.conv_block(x)
