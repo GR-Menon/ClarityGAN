@@ -6,6 +6,10 @@ Code Reference : https://github.com/aladdinpersson/Machine-Learning-Collection/t
 REalistic Single Image DEhazing dataset (RESIDE) :          
 - [Official](https://sites.google.com/view/reside-dehaze-datasets/reside-standard)
 - [Kaggle](https://www.kaggle.com/datasets/balraj98/indoor-training-set-its-residestandard)
+
+Kaggle notebooks:
+- [Regular Training](https://www.kaggle.com/code/gautamrmenon/claritygan-training)
+- [Mixed Precision Training](https://www.kaggle.com/code/gautamrmenon/claritygan-mixed-precision-training)
   
 ### Results
 
