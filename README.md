@@ -10,6 +10,10 @@ REalistic Single Image DEhazing dataset (RESIDE) :
 Kaggle notebooks:
 - [Regular Training](https://www.kaggle.com/code/gautamrmenon/claritygan-training)
 - [Mixed Precision Training](https://www.kaggle.com/code/gautamrmenon/claritygan-mixed-precision-training)
+
+Model Quantization notebooks:
+- [Quantization Aware Training](https://www.kaggle.com/code/gautamrmenon/claritygan-quantization-aware-training)
+- [Static / Dynamic Quantization](https://www.kaggle.com/code/gautamrmenon/claritygan-quantization-static-dynamic/notebook)
   
 ### Results
 
