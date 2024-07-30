@@ -38,8 +38,10 @@ CycleGANs do not rely on any task-specific, predefined similarity function betwe
 
 ### Adversarial Loss
 
-Adversarial losses are applied to both mapping functions, $G \ : \ X \rightarrow \ Y$ and $F \ : Y \rightarrow \ X$. For mapping function $G \ : \ X \rightarrow Y$ and its discriminator $D_Y$, the adversarial loss is defined as :  
-$$\mathcal {L}_{GAN}(G, D_Y, X, Y) \ = \ \mathbb {E}_{y \sim p_{data}(y)}[log \ D_Y(y)] \ + \ \mathbb {E}_{x\sim p_{data}(x)}[log(1 \ - \ D_Y(G(x)))]$$
+Adversarial losses are applied to both mapping functions, $G \ : \ X \rightarrow \ Y$ and $F \ : Y \rightarrow \ X$. For mapping function $G \ : \ X \rightarrow Y$ and its discriminator $D_Y$, the adversarial loss is defined as :       
+```math
+\mathcal {L}_{GAN}(G, D_Y, X, Y) \ = \ \mathbb {E}_{y \sim p_{data}(y)}[log \ D_Y(y)] \ + \ \mathbb {E}_{x\sim p_{data}(x)}[log(1 \ - \ D_Y(G(x)))]
+```  
 where $G$ tries to generate images $G(x)$ that look similar to images in domain Y, while $D_Y$ tries to distinguish between translated samples $G(x)$ and real samples $y$.
 
 ### Cycle Consistency Loss
@@ -53,7 +55,9 @@ Forward Consistency : $\ x \rightarrow G(x) \rightarrow F(G(x)) \approx x$
 Backward Consistency : $\ y \rightarrow F(y) \rightarrow G(F(y)) \approx y$
 
 Cycle Consistency Loss is defined as :  
-$$\mathcal{L}_{cyc}(G,F) \ = \ \mathbb{E}_{x \sim p_{data}(x)}\big[ ||F(G(x)) \ - \ x||_1 \big] \ + \ \mathbb{E}_{y \sim p_{data}{y}}\big[ ||G(F(y)) \ - \ y||_1\big]$$
+```math
+\mathcal{L}_{cyc}(G,F) \ = \ \mathbb{E}_{x \sim p_{data}(x)}\big[ ||F(G(x)) \ - \ x||_1 \big] \ + \ \mathbb{E}_{y \sim p_{data}{y}}\big[ ||G(F(y)) \ - \ y||_1\big]
+```
 
 ### VGG Loss
 
