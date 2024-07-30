@@ -33,16 +33,13 @@ Model Quantization notebooks:
 
 This is a class of vision problems where the goal is to learn the mapping between an input image and an output image
 using a set of aligned image pairs. CycleGANs introduce an approach for learning to translate an image from source
-domain $X$ to a target domain $Y$ in the absence of paired examples. Basically, the model learns a mapping $G \ : \ X \
-\rightarrow \ Y$ such that the distribution of images from $G(X)$ is indistinguishable from that of distribution $Y$.  
+domain $X$ to a target domain $Y$ in the absence of paired examples. Basically, the model learns a mapping $G \ : \ X \ \rightarrow \ Y$ such that the distribution of images from $G(X)$ is indistinguishable from that of distribution $Y$.  
 CycleGANs do not rely on any task-specific, predefined similarity function between the input and output, nor does it assume that the input and output have to lie in the same low-dimensional embedding space.Since this mapping is highly under-constrained, the CycleGAN couples it with an inverse mapping $F \ : \ Y \rightarrow \ X$ and introduce a **cycle-consistency** loss to enforce $F(G(X)) \approx X$.
 
 ### Adversarial Loss
 
-Adversarial losses are applied to both mapping functions, $G \ : \ X \rightarrow \ Y$ and $F \ : Y \rightarrow \ X$. For mapping function $G \ : \ X \rightarrow Y$ and its discriminator $D_Y$, the adversarial loss is defined as :
-
+Adversarial losses are applied to both mapping functions, $G \ : \ X \rightarrow \ Y$ and $F \ : Y \rightarrow \ X$. For mapping function $G \ : \ X \rightarrow Y$ and its discriminator $D_Y$, the adversarial loss is defined as :  
 $$\mathcal {L}_{GAN}(G, D_Y, X, Y) \ = \ \mathbb {E}_{y \sim p_{data}(y)}[log \ D_Y(y)] \ + \ \mathbb {E}_{x\sim p_{data}(x)}[log(1 \ - \ D_Y(G(x)))]$$
-
 where $G$ tries to generate images $G(x)$ that look similar to images in domain Y, while $D_Y$ tries to distinguish between translated samples $G(x)$ and real samples $y$.
 
 ### Cycle Consistency Loss
@@ -55,8 +52,7 @@ Forward Consistency : $\ x \rightarrow G(x) \rightarrow F(G(x)) \approx x$
 
 Backward Consistency : $\ y \rightarrow F(y) \rightarrow G(F(y)) \approx y$
 
-Cycle Consistency Loss is defined as :
-
+Cycle Consistency Loss is defined as :  
 $$\mathcal{L}_{cyc}(G,F) \ = \ \mathbb{E}_{x \sim p_{data}(x)}\big[ ||F(G(x)) \ - \ x||_1 \big] \ + \ \mathbb{E}_{y \sim p_{data}{y}}\big[ ||G(F(y)) \ - \ y||_1\big]$$
 
 ### VGG Loss
@@ -65,29 +61,33 @@ VGG Loss is a type of content loss introduced in [Perceptual Losses for Real-Tim
 Its based on the ReLU activation of the pre-trained VGG19 network.
 
 # References
+
 [Unpaired Image-to-Image Translation using Cycle-Consistent Adversarial Networks](https://arxiv.org/pdf/1703.10593)
 
 ```markdown
 @misc{zhu2020unpairedimagetoimagetranslationusing,
-      title={Unpaired Image-to-Image Translation using Cycle-Consistent Adversarial Networks}, 
-      author={Jun-Yan Zhu and Taesung Park and Phillip Isola and Alexei A. Efros},
-      year={2020},
-      eprint={1703.10593},
-      archivePrefix={arXiv},
-      primaryClass={cs.CV},
-      url={https://arxiv.org/abs/1703.10593}, 
+title={Unpaired Image-to-Image Translation using Cycle-Consistent Adversarial Networks},
+author={Jun-Yan Zhu and Taesung Park and Phillip Isola and Alexei A. Efros},
+year={2020},
+eprint={1703.10593},
+archivePrefix={arXiv},
+primaryClass={cs.CV},
+url={https://arxiv.org/abs/1703.10593},
 }
 ```
+
 [Cycle-Dehaze: Enhanced CycleGAN for Single Image Dehazing](https://arxiv.org/pdf/1805.05308)
+
 ```tex
 @misc{engin2018cycledehazeenhancedcyclegansingle,
-      title={Cycle-Dehaze: Enhanced CycleGAN for Single Image Dehazing}, 
+      title={Cycle-Dehaze: Enhanced CycleGAN for Single Image Dehazing},
       author={Deniz Engin and Anıl Genç and Hazım Kemal Ekenel},
       year={2018},
       eprint={1805.05308},
       archivePrefix={arXiv},
       primaryClass={cs.CV},
-      url={https://arxiv.org/abs/1805.05308}, 
+      url={https://arxiv.org/abs/1805.05308},
 }
 ```
+
 [VGG Loss](https://paperswithcode.com/method/vgg-loss)
