@@ -1,10 +1,11 @@
 # ClarityGAN
 
 Image Dehazing using CycleGANs.  
+<br>
+Developed in collaboration with [Ansh Singhal](https://github.com/AnshDevelops).   
 </br>
 Code Reference : https://github.com/aladdinpersson/Machine-Learning-Collection/tree/master/ML/Pytorch/GANs/CycleGAN  
 </br>
-REalistic Single Image DEhazing dataset (RESIDE) :
 
 - [Official](https://sites.google.com/view/reside-dehaze-datasets/reside-standard)
 - [Kaggle](https://www.kaggle.com/datasets/balraj98/indoor-training-set-its-residestandard)
